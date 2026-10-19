@@ -1,0 +1,21 @@
+services:
+  postgres:
+    image: postgres:17
+    container_name: atlas-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: atlas
+      POSTGRES_PASSWORD: ${ATLAS_DB_PASSWORD:?Set ATLAS_DB_PASSWORD}
+      POSTGRES_DB: atlas_dev
+    ports:
+      - "127.0.0.1:5432:5432"
+    volumes:
+      - atlas_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U atlas -d atlas_dev"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  atlas_pgdata:
